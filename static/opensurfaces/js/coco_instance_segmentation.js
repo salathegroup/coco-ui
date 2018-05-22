@@ -5,9 +5,10 @@ function Ctrler(){
     this.originX;
     this.originY;
     this.im = new Image();
+    // Note: image src is now set elsewhere
     // use cat icon for demo
-    var cat_id = 17;
-    this.im.src = STATIC_ROOT + '/images/categories/'+cat_id+'.png';
+    // var cat_id = 17;
+    // this.im.src = STATIC_ROOT + '/images/categories/'+cat_id+'.png';
     this.zoomLevel = 0;
 }
 // center icon

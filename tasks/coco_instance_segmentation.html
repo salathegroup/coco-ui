@@ -5,6 +5,8 @@ https://github.com/seanbell/opensurfaces
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>MTURK FOOD IMAGE SEGMENTATION TASK</title>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -26,36 +28,39 @@ https://github.com/seanbell/opensurfaces
         var init_time = $.now();
         var Anno = [];
         // instance annotations that were collected from the instance spotting stage
-        Anno.push([0.3,0.5]);
+		// TODO ignoring this step [or use output from instance spotting task if we bring that back]
+        // Anno.push([0.3,0.5]);
 
         // there is a cat has been annotated before (shown in blue) in the demo
         // the workers should progressive annotate all cats in the image
         // the interface should show instance segmentation specified by:
         // polys: [polygon1, polygon2]
         // polygon: [x1,y1,x2,y2,...,xn,yn] x, y are fractions of image width and height
-        var polys = [[0.17821553290059533,0.4564724718351938,0.1601562393003034,0.4472112956299159,0.14904282785396986,0.4342456489425268,0.14904282785396986,0.42313223749619333,0.13654023997684467,0.4064621203266931,0.135151063546053,0.36015623930030344,0.14765365142317816,0.3119981230328583,0.1448752985615948,0.28977130014019126,0.13237271068446962,0.2656922420064687,0.1309835342536779,0.24531765435485722,0.13654023997684467,0.21753412573902353,0.15043200428476153,0.21197742001585673,0.18377223862376202,0.24161318387274608,0.21711247296276254,0.2527265953190796,0.29351717665630533,0.2397609486316905,0.3171331759797641,0.2397609486316905,0.3449167045955978,0.228647537185357,0.40048376182726525,0.24902212483696842,0.4477157604741826,0.228647537185357,0.5074503469982252,0.22679530194430142,0.5769091685378096,0.22679530194430142,0.6533138722313524,0.25643106580119074,0.7102701058938116,0.28051012393491337,0.775561398141021,0.3231115344791918,0.8519661018345637,0.3879397679161372,0.8589119839885221,0.46573364804047174,0.8630795132808972,0.5416752929237507,0.8561336311269389,0.5805722329859179,0.8575228075577305,0.6213214082891407,0.8533552782653554,0.6528094073870856,0.8186258674955632,0.6435482311818077,0.7936206917413128,0.6435482311818077,0.7422211638020204,0.673183995038697,0.7269402230633119,0.673183995038697,0.5991359914304766,0.6305825844944186,0.5921901092765182,0.6046512911196404,0.6005251678612683,0.5916856444322514,0.5991359914304766,0.5639021158164177,0.6171952850307686,0.5527887043700841,0.6033035207228516,0.5379708224416394,0.5519039927835593,0.5287096462363615,0.5116178762906003,0.5046305881026389,0.45049411333576606,0.4675858832815273,0.4199322318583489,0.4472112956299159,0.39214870324251516,0.41016659080880424,0.34213835173401447,0.39720094412141516,0.268512000902055,0.38423529743402607,0.22266917868592925,0.39905317936247076,0.20738823794722072,0.4305411784604156,0.1879397679161371,0.45276800135308265]];
+        var polys = []; // TODO if labels already exist for this image, could retrieve and display them?
     </script>
     <!-- END: OPENSURFACE ADD-ON, ADDED BY Tsung-Yi Lin -->
 
 </head>
-<form id='mturk_form' action="MTURK_FORM_TO_SUBMIT">
-	<input type="hidden" id="hitId" name="hitId" value='MTURK_HIT_ID'>
-	<input type="hidden" id="assignmentId" name="assignmentId" value='MTURK_ASSIGNMENT_ID'>
-	<input type="hidden" id="workerId" name="workerId" value='MTURK_WORKER_ID'>
-	<input type="hidden" id="isObj" name="isObj" value='0'>
+<form id='mturk_form' action="{{ MTURK_FORM_TO_SUBMIT }}" method="post">
+    <input type="hidden" id="hitId" name="hitId" value='MTURK_HIT_ID'>
+    <input type="hidden" id="assignmentId" name="assignmentId" value='MTURK_ASSIGNMENT_ID'>
+    <input type="hidden" id="workerId" name="workerId" value='MTURK_WORKER_ID'>
+    <input type="hidden" id="isObj" name="isObj" value='0'>
+    <!-- coco_instance_segmentation.js should modify these form fields-->
+    <input type="hidden" id="duration" name="duration" value='0'>
+    <input type="hidden" id="ans" name="ans" value='0'>
 </form>
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
-<!-- BEGIN MAIN UI -->
+    <!-- BEGIN MAIN UI -->
 	<div id='content-container'>
 		<div id="mt-top-nohover">
 			<div id="mt-instructions">
                 <div>
-					Instructions: carefully trace around regions that have a <span style='color:blue;font-size:18pt'>single cat </span>indicated by the icon.
+					Instructions: carefully trace around each instance of <span style='color:blue;font-size:18pt'>{{ image_to_annotate["CLASS_NAME"] }}</span>.
                     <div>
-                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/cat-1.jpg'></div>
-                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/cat-2.jpg'></div>
-                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/cat-3.jpg'></div>
-                        <div>Not sure what object cat is? Click on <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q=cat'>here</a> to see examples!</div>
+                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-1.png'></div>
+                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-2.png'></div>
+                        <div>Not sure what {{ image_to_annotate["CLASS_NAME"] }} is? Search with Google <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["CLASS_NAME"] }}'>here</a> to see examples!</div>
                     </div>
 				</div>
 				<span class="pull-right">
@@ -86,8 +91,6 @@ https://github.com/seanbell/opensurfaces
             </div>
                 <div class="ui-controls-top">
                 <span class="btn-group">
-					<button id='btn-move' type="button" class="btn">
-				    <i class="icon-resize-small"></i> Move to Target (M)</button>
 					<button id='btn-zoom-in' type="button" class="btn">
 				    <i class="icon-resize-small"></i> Zoom In (I)</button>
 					<button id='btn-zoom-out' type="button" class="btn">
@@ -98,16 +101,16 @@ https://github.com/seanbell/opensurfaces
                 </div>
             </div>
             <div class="ui-controls-top">
-            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit" disabled="disabled">Next</button>
-				<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit-noobj">No cat in this image</button>
+            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit" disabled="disabled">Submit</button>
+				<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit-noobj">No {{ image_to_annotate['CLASS_NAME'] }} in this image</button>
                 <a href="#modal-examples" role="button" id='btn-example' class="btn btn-warning" data-toggle="modal">Examples</a>
                 <a href="#modal-instructions" role="button" class="btn btn-warning" id='btn-instructions' data-toggle="modal">Instructions</a>
                 <div class="ui-controls-top" style='font-size:14pt'>
-                Tips: Using <span style='color:blue'>"Move to taget" (M) </span>  and <span style='color:blue'>"Zoom In" (I) </span> for the small object!  <br>
+                Tips: Using <span style='color:blue'>"Zoom In" (I) </span> for the small object!  <br>
                 Use <span style='color:blue'>Ctrl-Z</span> to undo a click. <br>
                 Please do <span style='color:red'>Only 1 object</span> at each turn. <br>
                 <span style='color:red'> Draw multiple polygons if needed!! </span><br>
-                
+
             </div>
             </div>
 
@@ -123,17 +126,16 @@ https://github.com/seanbell/opensurfaces
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal"
 				aria-hidden="true">&times;</button>
-            <h3 id="modal-examples-label">Good Examples of cat segmentations</h3>
+            <h3 id="modal-examples-label">Good Examples of {{ image_to_annotate["CLASS_NAME"] }} segmentations</h3>
 		</div>
 		<div class="modal-body">
 			<div class="container-fluid">
-                <p>Not sure what the object "cat" is? Click on <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q=cat'>here</a> to see examples!</p>
+                <p>Not sure what the object "{{ image_to_annotate["CLASS_NAME"] }}" is? Click on <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["CLASS_NAME"] }}'>here</a> to see examples!</p>
 				<div class="row-fluid" style='width:200%'>
 					<div class="span4">
 						<div class="thumbnail">
-                            <img src="../static/opensurfaces/examples/cat-1.jpg"  alt="" />
-                            <img src="../static/opensurfaces/examples/cat-2.jpg"  alt="" />
-                            <img src="../static/opensurfaces/examples/cat-3.jpg"  alt="" />
+                            <img src="../static/opensurfaces/examples/demo-food-segmentation-1.png"  alt="" />
+                            <img src="../static/opensurfaces/examples/demo-food-segmentation-2.png"  alt="" />
 						</div>
 					</div>
                 </div>
@@ -168,11 +170,11 @@ https://github.com/seanbell/opensurfaces
             <div class="container-fluid">
                 <h2>How to submit</h2>
                 <p> Trace the shape for the indicated object in the image.
-                Click <i>Next</i> after you draw a shape.
-                    Skip an image by clicking <i> No {{cat.name}} in this image</i> if there is no indicated object.
-                    The HIT will be submitted after you finished {{max_count}} objects.</p>
+                Click <i>Submit</i> after you draw a shape.
+                    Skip an image by clicking <i> No {{ image_to_annotate["CLASS_NAME"] }} in this image</i> if there is no indicated object.
+                    <!--The HIT will be submitted after you have annotated {{ max_count }} objects.</p>-->
                 <h2>What to draw</h2> <p>Please draw the shape around regions that have a
-                <i>single</i> {{cat.name}}.
+                <i>single</i> {{ image_to_annotate["CLASS_NAME"] }}.
 
                 Make the region as tight as possible.  <b>Your shape should closely
                     follow the object boundary.</b>
@@ -260,7 +262,7 @@ https://github.com/seanbell/opensurfaces
                 </div>
 
                 <h2>Zoom in to see better</h2>
-                <p>Scroll with the mouse wheel to zoom in.  Use move to target (M) to center the target object.  Zoom In (I) and Zoom out (O) help you to zoom to the object.</p>
+                <p>Scroll with the mouse wheel to zoom in.  Zoom In (I) and Zoom out (O) help you to zoom to the object.</p>
                 <br/>
 
                 <h2>Move around in the image</h2>
@@ -280,12 +282,12 @@ https://github.com/seanbell/opensurfaces
                             <dt>Redo</dt> <dd>You can also re-do an action with Ctrl-Y.</dd>
                             <dt>Close</dt> <dd>To close a polygon, right-click on the image or you can click the &quot;Close&quot; button.</dd>
                             <dt>Delete</dt> <dd>You can delete polygons by selecting them with the &quot;Adjust&quot; button and pressing delete.</dd>
-                            <dt>Move to Target</dt> <dd>Move to the target object that you need to segment. Shortcut: M</dd>
                             <dt>Zoom In</dt> <dd>Click &quot;Zoom in&quot; button or press I for shortcut. </dd>
                             <dt>Zoom out</dt> <dd>Click &quot;Zoom out&quot; button or press O for shortcut.</dd>
                             <dt>Reset Zoom</dt> <dd>When zoomed in, you you can click &quot;Reset Zoom&quot; to zoom out again.</dd>
-                            <dt>Next</dt> <dd>Proceed to next image.</dd>
-                            <dt>No object in this image</dt> <dd>Skip this image if no object present.</dd>
+                            <!--<dt>Next</dt> <dd>Proceed to next image.</dd>-->
+                            <dt>Submit</dt> <dd>Submit annotation for this image.</dd>
+                            <dt>No object in this image</dt> <dd>Flag this image if the object is not present.</dd>
                             <dt>Examples</dt> <dd>Show examples of good segmentation for this object.</dd>
                         </dl>
                     </div>
@@ -439,15 +441,15 @@ https://github.com/seanbell/opensurfaces
 			that the first and last point can connect.</p>
 
 			<div class="thumbnail span2">
-				<img src="../static/opensurfaces//img/bad-close.jpg" alt=""/>
+				<img src="../static/opensurfaces/img/bad-close.jpg" alt=""/>
 				<p class="mt-caption">This polygon cannot close.</p>
 			</div>
 			<div class="thumbnail span2">
-				<img src="../static/opensurfaces//img/bad-vertex.jpg" alt=""/>
+				<img src="../static/opensurfaces/img/bad-vertex.jpg" alt=""/>
 				<p class="mt-caption">This edge cannot be added.</p>
 			</div>
 			<div class="thumbnail span2">
-				<img src="../static/opensurfaces//img/good-close.jpg" alt=""/>
+				<img src="../static/opensurfaces/img/good-close.jpg" alt=""/>
 				<p class="mt-caption">This polygon can be closed.</p>
 			</div>
 		</div>
@@ -469,8 +471,9 @@ https://github.com/seanbell/opensurfaces
  		// giving a fake photo_id
 		window.template_args = {
             // BEGIN: OPENSURFACE ADD-ON, ADDED BY Tsung-Yi Lin
-            photo_url: "../static/images/demo/cat.jpg",
-            photo_id: 1,
+            // TODO how to set for each image???
+            photo_url: "{{ image_to_annotate['IMAGE_URL'] }}",
+            photo_id: "{{ image_to_annotate['IMAGE_ID'] }}"
             // END: OPENSURFACE ADD-ON, ADDED BY Tsung-Yi Lin
 		};
 
@@ -489,4 +492,3 @@ https://github.com/seanbell/opensurfaces
 
 </body>
 </html>
-
