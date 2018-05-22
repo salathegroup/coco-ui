@@ -1,0 +1,4 @@
+boto3
+xmltodict
+jinja2
+flask
