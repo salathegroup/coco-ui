@@ -25,24 +25,24 @@ for file_dir, _, files in os.walk(images_dir):
     for filename in files:
         if filename.endswith(".jpg"):
             image_id = filename[:-4]
-            print(image_id)
-
-            # TODO remove, this keeps ~0.1% of the 125k images so that it's possible to compare annotations
-            # if random.random() > 0.001:
-            #     continue
 
             all_image_ids.append(image_id)
 
             # Get the class directory
             class_dir = os.path.relpath(file_dir, images_dir)
-            print(class_dir)
-            image_id_to_class_name[image_id] = class_dir
+
+            # TODO consistent way to extract label from directory name
+            # some are enclosed in quotes xxx. "avocado" avocado...
+            # whereas others are not quoted
+            classname = class_dir
+
+            image_id_to_class_name[image_id] = classname
 
             # Get the S3 static URL for this image
             filepath_as_url = urllib.parse.quote(os.path.join(class_dir, filename))
             image_id_to_url[image_id] = "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/" + filepath_as_url
 
-            print(image_id, image_id_to_class_name[image_id], image_id_to_url[image_id])
+            # print(image_id, image_id_to_class_name[image_id], image_id_to_url[image_id])
 
 
 print("Number of images available:", len(all_image_ids))
