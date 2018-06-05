@@ -1,0 +1,4 @@
+pycocotools
+matplotlib
+scikit-image
+numpy
