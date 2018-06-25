@@ -4,7 +4,7 @@
 <DisplayName>Q1</DisplayName>
 <IsRequired>true</IsRequired>
 <QuestionContent>
-<Text> Which statement best describes your color vision? </Text>
+<Text> Which image does not correspond to a good segmentation?</Text>
 </QuestionContent>
 <AnswerSpecification>
 <SelectionAnswer>
@@ -15,36 +15,48 @@
 <Binary>
     <MimeType>
         <Type>image</Type>
-            <SubType></SubType>
+        <SubType>png</SubType>
     </MimeType>
-    <DataURL>http://tictactoe.amazon.com/game/01523/board.gif</DataURL>
-    <AltText>The game board, with "X" to move.</AltText>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann1.png</DataURL>
+    <AltText>This one is good</AltText>
 </Binary>
 </Selection>
 <Selection>
 <SelectionIdentifier>by</SelectionIdentifier>
-<Text>                                                                                                                                                               blue-yellow
-colorblind.</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann2.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
+
 </Selection>
 <Selection>
 <SelectionIdentifier>other</SelectionIdentifier>
-<Text>I
-have
-some
-other
-issue
-with
-my
-color
-vision.</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann3.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
 </Selection>
 <Selection>
 <SelectionIdentifier>norm</SelectionIdentifier>
-<Text>My
-color
-vision
-is
-normal.</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann4.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
 </Selection>
 </Selections>
 </SelectionAnswer>
@@ -56,26 +68,8 @@ normal.</Text>
 <IsRequired>true</IsRequired>
 <QuestionContent>
 <Text>
-What
-number
-do
-you
-see
-in
-the
-image
-below?
+Which of these is not a "proper" segmentation?
 </Text>
-<Binary>
-<MimeType>
-<Type>image</Type>
-<SubType>jpg</SubType>
-</MimeType>
-<DataURL>https://www.spservices.co.uk/images/products/pics/1401209116aw2271.jpg</DataURL>
-<AltText>Ishihara
-Color
-Plate</AltText>
-</Binary>
 </QuestionContent>
 <AnswerSpecification>
 <SelectionAnswer>
@@ -83,23 +77,52 @@ Plate</AltText>
 <Selections>
 <Selection>
 <SelectionIdentifier>122</SelectionIdentifier>
-<Text>122</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann5.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
 </Selection>
 <Selection>
 <SelectionIdentifier>74</SelectionIdentifier>
-<Text>74</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann6.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
 </Selection>
 <Selection>
 <SelectionIdentifier>21</SelectionIdentifier>
-<Text>21</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann7.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
+
 </Selection>
 <Selection>
 <SelectionIdentifier>none</SelectionIdentifier>
-<Text>I
-don't
-see
-a
-number.</Text>
+<Binary>
+    <MimeType>
+        <Type>image</Type>
+<SubType>png</SubType>
+    </MimeType>
+    <DataURL>https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/labelled_images/ann8.png</DataURL>
+    <AltText>This one is good</AltText>
+</Binary>
+
+
 </Selection>
 </Selections>
 </SelectionAnswer>
