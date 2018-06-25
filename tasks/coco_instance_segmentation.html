@@ -10,7 +10,7 @@ https://github.com/seanbell/opensurfaces
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-
+    <script src="https://s3.amazonaws.com/mturk-public/externalHIT_v1.js"></script>
 	<link href="../static/opensurfaces/css/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>
 	<link href="../static/opensurfaces/css/bootstrap-2.2.1.min.css" rel="stylesheet" type="text/css"/>
 	<link href="../static/opensurfaces/css/mturk.css" rel="stylesheet" type="text/css" />
@@ -24,6 +24,7 @@ https://github.com/seanbell/opensurfaces
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="../static/opensurfaces/js/coco_instance_segmentation.js"></script>
     <script>
+        assignmentID = turkGetParam('assignmentId',"");
         var STATIC_ROOT = '../static';
         var init_time = $.now();
         var Anno = [];
@@ -52,6 +53,7 @@ https://github.com/seanbell/opensurfaces
 </form>
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
     <!-- BEGIN MAIN UI -->
+    <script>document.getElementById('assignmentId').value = assignmentID;</script>
 	<div id='content-container'>
 		<div id="mt-top-nohover">
 			<div id="mt-instructions">

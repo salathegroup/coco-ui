@@ -249,11 +249,11 @@ def create_instance_segmentation_hit():
     #                                TestDurationInSeconds = 120
     #                                )
                                     
-    questions = open('Ques_Form.xml','r').read()
-    answers = open('Ans.xml','r').read()
-    qual_response = mturk.create_qualification_type(Name='Color blindness test 1a',Keywords='test, qualification, sample, colorblindness, boto',Description='This is a brief colorblindness test',QualificationTypeStatus='Active',Test=questions,AnswerKey=answers,TestDurationInSeconds=300)
-    print ("Qualification Type Id:")
-    print (qual_response['QualificationType']['QualificationTypeId'])                              
+    #questions = open('Ques_Form.xml','r').read()
+    #answers = open('Ans.xml','r').read()
+    #qual_response = mturk.create_qualification_type(Name='Color blindness test 1a',Keywords='test, qualification, sample, colorblindness, boto',Description='This is a brief colorblindness test',QualificationTypeStatus='Active',Test=questions,AnswerKey=answers,TestDurationInSeconds=300)
+    #print ("Qualification Type Id:")
+    #print (qual_response['QualificationType']['QualificationTypeId'])                              
 
     image_id = random.sample(all_image_ids,2)
     hits = {}    
@@ -274,9 +274,9 @@ def create_instance_segmentation_hit():
         	AutoApprovalDelayInSeconds=HIT["AutoApprovalDelayInSeconds"],
             Question=create_xml_question(html_text),
 #            Question=create_external_question(i),
-            QualificationRequirements=[{'QualificationTypeId':qual_response['QualificationType']['QualificationTypeId'],
-            'Comparator':'EqualTo',
-            'IntegerValues':[100]}]
+#            QualificationRequirements=[{'QualificationTypeId':qual_response['QualificationType']['QualificationTypeId'],
+#            'Comparator':'EqualTo',
+#            'IntegerValues':[100]}]
         )
         print("HITId: " + new_hit['HIT']['HITId'])
         print("A new HIT has been created. You can preview it here:")

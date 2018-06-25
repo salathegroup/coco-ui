@@ -86,7 +86,7 @@ Ctrler.prototype.submitNoObj = function(){
       if (!mt_submit_ready) {
         return;
       }
-      window.show_modal_loading("Submitting...", 0);
+     //window.show_modal_loading("Submitting...", 0);
       var data = $.extend(true, {
                     screen_width: screen.width,
                     screen_height: screen.height,
@@ -106,20 +106,21 @@ Ctrler.prototype.submitNoObj = function(){
         $("input[name='ans']").val(ans);
         $("input[name='isObj']").val(0);
         $('#mturk_form').submit();
+        console.log("blabla");
 }
 Ctrler.prototype.submit_form = function(data_callback) {
       var data, feedback;
       if (!mt_submit_ready) {
         return;
       }
-      window.show_modal_loading("Submitting...", 0);
+      //window.show_modal_loading("Submitting...", 0);
       data = data_callback();
-      if (window.ask_for_feedback) {
-        feedback = typeof window.get_modal_feedback === "function" ? window.get_modal_feedback() : void 0;
-      }
-      if ((feedback != null) && !$.isEmptyObject(feedback)) {
-        data.feedback = JSON.stringify(feedback);
-      }
+      //if (window.ask_for_feedback) {
+      //  feedback = typeof window.get_modal_feedback === "function" ? window.get_modal_feedback() : void 0;
+      //}
+      //if ((feedback != null) && !$.isEmptyObject(feedback)) {
+      //  data.feedback = JSON.stringify(feedback);
+      //}
       console.log("submit data:");
       console.log(data);
       var data = $.extend(true, {
@@ -246,5 +247,5 @@ $(window).load(function(){
     ctrler.renderHint();
     // ctrler.centerIcon();
     ctrler.addListener();
-    window.controller_ui.s.stage_ui.layer.afterDrawFunc = ctrler.renderHint
+    //window.controller_ui.s.stage_ui.layer.afterDrawFunc = ctrler.renderHint
 });
