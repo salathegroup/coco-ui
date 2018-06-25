@@ -4,48 +4,67 @@ import random
 import urllib.parse
 import uuid
 import sys
-
+import requests
 from jinja2 import FileSystemLoader
 import boto3
 
 from flask import Flask, request, render_template, jsonify, redirect, url_for
 app = Flask("test segmentation task MTurk")
-
-images_dir = sys.argv[1]  # TODO use flask app.config
-
+seg_imgs = 10
 # Small set of images for testing
-
+temp = 1
 # Build mapping
 image_id_to_class_name = {}
 image_id_to_url = {}
+all_image_ids = []
+GROUND_TRUTH_PATH ="" #Add ground truth path
+
+
+s3 = boto3.client('s3').list_objects(Bucket='myfoodrepo-bing-images',Prefix='images')
+for i in s3['Contents']:
+    splitted = i['Key'].split("/")
+    if splitted[0] != 'images':
+        continue
+    filename = splitted.pop()
+    image_id = filename[:-4]     
+    classname = "/".join(splitted[1:])
+    all_image_ids.append(image_id)
+    image_id_to_class_name[image_id] = classname
+    filepath_as_url = urllib.parse.quote(os.path.join(classname, filename))
+    image_id_to_url[image_id] = "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/" + filepath_as_url
+print("Number of images available:", len(all_image_ids))
+
 
 # TODO only want a small set of random images right now
-all_image_ids = []
-for file_dir, _, files in os.walk(images_dir):
-    for filename in files:
-        if filename.endswith(".jpg"):
-            image_id = filename[:-4]
+def use_local_imdir():
+    images_dir = sys.argv[1]  # TODO use flask app.config
 
-            all_image_ids.append(image_id)
+    
+    for file_dir, _, files in os.walk(images_dir):
+        for filename in files:
+            if filename.endswith(".jpg"):
+                image_id = filename[:-4]
 
-            # Get the class directory
-            class_dir = os.path.relpath(file_dir, images_dir)
+                all_image_ids.append(image_id)
 
-            # TODO consistent way to extract label from directory name
-            # some are enclosed in quotes xxx. "avocado" avocado...
-            # whereas others are not quoted
-            classname = class_dir
+                # Get the class directory
+                class_dir = os.path.relpath(file_dir, images_dir)
 
-            image_id_to_class_name[image_id] = classname
+                # TODO consistent way to extract label from directory name
+                # some are enclosed in quotes xxx. "avocado" avocado...
+                # whereas others are not quoted
+                classname = class_dir
+
+                image_id_to_class_name[image_id] = classname
 
             # Get the S3 static URL for this image
-            filepath_as_url = urllib.parse.quote(os.path.join(class_dir, filename))
-            image_id_to_url[image_id] = "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/" + filepath_as_url
+                filepath_as_url = urllib.parse.quote(os.path.join(class_dir, filename))
+                image_id_to_url[image_id] = "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/" + filepath_as_url
 
             # print(image_id, image_id_to_class_name[image_id], image_id_to_url[image_id])
+    print("Number of images available:", len(all_image_ids))                
 
 
-print("Number of images available:", len(all_image_ids))
 
 
 def create_xml_question(html_text):
@@ -81,10 +100,8 @@ def get_form(image_id):
 @app.route("/")
 def main_page():
     doc = """
-    <h1>Help page under construction<h1>
-    
-    See all available endpoints: <a href="/routes">here</a>
-    
+    Segment 10 images. Qualification given if segmentation quality good
+    <a href="/segment/random">Start here</a>
     """
     return doc
 
@@ -114,8 +131,13 @@ def process_submission():
         output = "SUBMITTED ANNOTATION FOR IMAGE %s" % str(image_ids)
     else:
         output = "FLAGGED IMAGE AS NOT CONTAINING THE CLASS"
-
-    return output + "<br><a href=\"/segment/random\">Label another image</a>"
+        
+    seg_imgs-=1
+    if seg_imgs == 0:
+       #metrics = calculate_metrics()
+       metrics = 0.8
+       req = requests.post(url = "https://workersandbox.mturk.com/mturk/externalSubmit", data=metrics)
+    return output + "<br><a href=\"/segment/random\">Label another image</a>" + str(seg_imgs) + " images remaining"
 
 
 @app.route("/segment/random")
@@ -124,6 +146,7 @@ def segment_random_image():
 
     # TODO get a random imageID, retrieve its static URL and get the class name from this?
     """
+    
     image_id = random.choice(all_image_ids)
     dest = url_for("segment_image", image_id=image_id)
     print(dest)
@@ -232,4 +255,4 @@ def usage():
 
 if __name__ == "__main__":
     usage()
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0",port=5005)

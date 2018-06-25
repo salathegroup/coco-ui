@@ -118,4 +118,21 @@ carefully trace around each region/instance/chunk/pile/?? that contains 100% (?)
 * Training tasks
 * Test with ourselves
 * Feedback testing: connect with Turkers/respond to questions
-* 
+
+
+#This branch should be used for heroku only
+Used hacky fix (limited number of image queries to 1000) to prevent heroku timeout error.
+Longterm-solution: Create a herou db which stores classnames, filenames and URLs.
+
+#Running this branch on heroku
+* Clone the branch into a folder
+heroku login
+cd cloned-folder
+heroku create [herokuapp-name]
+git push heroku master
+(Might need a dummy first commit, if git push doesn't work)
+
+#Monitor heroku logs
+heroku logs [herokuapp-name]
+
+
