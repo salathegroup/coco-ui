@@ -100,9 +100,9 @@ for filename in filenames:
         ax.add_collection(p)
 
         # Save annotated images as jpgs
-        filepath = title + ".jpg"
+        filepath = title + ".png"
         if not os.path.exists(filepath):
-            plt.savefig(title + ".jpg", bbox_inches="tight")
+            plt.savefig(filepath, bbox_inches="tight")
 
     # Display with matplotlib
     plt.show()
