@@ -1,4 +1,4 @@
 .idea
 keys.json
-hits.json
-tasks/outtpit.html
+debug/
+__pycache__/
