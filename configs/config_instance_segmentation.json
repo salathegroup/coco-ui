@@ -1,17 +1,22 @@
 {
   "STATIC_ROOT": "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/new_statics",
-  "STATIC_ROOT1": "https://storage.googleapis.com/ui-static.cocodataset.org",
-  "HIT":{
+  "HIT": {
     "USE_SANDBOX": true,
     "REGION_NAME": "us-east-1",
-    "Title": "Segment the items in the image",
-    "Description": "Trace a path around every instance of a specified food item in this image. TODO: change static root.",
-    "Keywords": "image, category, classification",
-    "Reward": "0.05",
+    "Title": "Trace the food items in an image",
+    "Description": "Trace a path around each instance of a specified food item in this image",
+    "Keywords": "image, category, classification, label, short",
+    "Reward": "0.10",
     "MaxAssignments": 1,
     "LifetimeInSeconds": 172800,
-    "AssignmentDurationInSeconds": 100,
+    "AssignmentDurationInSeconds": 120,
     "AutoApprovalDelayInSeconds": 86400,
     "Question": "tasks/coco_instance_segmentation.html"
+  },
+  "QUALIFICATION_HIT": {
+    "Title": "(Qualify to) trace the food items in an image",
+    "Description": "Qualification task - learn to trace paths around food items in an image",
+    "Keywords": "image, category, classification, label, short",
+    "TestDurationInSeconds": 300
   }
 }
