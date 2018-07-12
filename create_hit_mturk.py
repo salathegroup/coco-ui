@@ -181,6 +181,7 @@ for class_id in class_ids_to_use:
 
     # Create hits with the first X bing images and first Y food101 images
     image_ids_to_use_for_this_class = bing_images[:NUM_BING_IMAGES_PER_CLASS] + food_101_images[:NUM_FOOD101_IMAGES_PER_CLASS]
+    print(len(image_ids_to_use_for_this_class), "images will be used for class", class_id)
 
     for image_id in image_ids_to_use_for_this_class:  # TODO only using some images per class right now during testing
         image_url = image_id_to_url[image_id]
@@ -256,9 +257,12 @@ for class_id in class_ids_to_use:
             temp_dict[key] = new_hit['HIT'][key]
         hits[new_hit['HIT']['HITId']] = temp_dict
 
+print("Created", len(hits), "hits")
 
+hits_filename = "hits/" + strftime("%Y_%m_%d_%H:%M:%S_", gmtime()) + "hits.json"
 if not os.path.exists("hits"):
     os.mkdir("hits")
-with open("hits/" + strftime("%Y_%m_%d_%H:%M:%S ", gmtime()) + "hits.json", 'w') as f:
+with open(hits_filename, 'w') as f:
     # HIT details saved with Time Stamps.
     json.dump(hits, f, indent=4, sort_keys=True, default=str)
+    print("Saved hits file:", hits_filename)
