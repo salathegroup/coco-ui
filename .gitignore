@@ -1,4 +1,12 @@
-.idea
+# Secrets 
 keys.json
-debug/
+
+# Cache files
+.idea
 __pycache__/
+.DS_Store
+
+# Project-specific folders
+debug/
+pickles/
+hits/
