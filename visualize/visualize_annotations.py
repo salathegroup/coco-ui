@@ -62,18 +62,26 @@ for filename in filenames:
         assert action_log[0]["photo_id"] == image_id
         jsonprint(action_log[0])
         photo_url = action_log[0]["photo_url"]
+
         time_str = action_log[0]["time"]
         print(photo_url)
 
         # Retrieve the image that was annotated
         # TODO if on cluster, look directly to stored images rather than making requests
         image = io.imread(photo_url)
-        plt.figure()
+        fig = plt.figure()
         title = "%s @ %s" % (image_id, time_str)
-        plt.title(title)
+        # title = "%s_%s" % (image_id, os.path.basename(filename))
+        # TODO make option to only display JPG
+        #plt.title(title)
         ax = plt.axes()
+        #
+        # fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        #ax.axis('tight')
+        ax.axis('off')
         print(image.shape)
         ax.imshow(image, aspect="equal")
+
         patches = []
 
         for poly in annotations:
@@ -92,19 +100,21 @@ for filename in filenames:
             print(xy_coords)
             for x,y in xy_coords:
                 plt.scatter(x,y)
-            poly_patch = Polygon(xy_coords)
+            poly_patch = Polygon(xy_coords, edgecolor="red", fill=False, linewidth=3)
 
             patches.append(poly_patch)
 
-        p = PatchCollection(patches, alpha=0.4)
+        p = PatchCollection(patches, match_original=True, alpha=0.3)
         ax.add_collection(p)
 
-        # Save annotated images as jpgs
+        # Save annotated images as pngs
         filepath = title + ".png"
-        if not os.path.exists(filepath):
-            plt.savefig(filepath, bbox_inches="tight")
+        if True: # TODO restore not os.path.exists(filepath):
+            extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+            plt.savefig(filepath, bbox_inches=extent)  #"tight"
+            print("Saved to ", filepath)
 
-    # Display with matplotlib
-    plt.show()
+# Display with matplotlib
+#plt.show()
 
 print("Image IDs used:", image_ids)
