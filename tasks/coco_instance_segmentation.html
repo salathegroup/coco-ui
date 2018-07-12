@@ -56,65 +56,81 @@ https://github.com/seanbell/opensurfaces
     <script>document.getElementById('assignmentId').value = assignmentID;</script>
 	<div id='content-container'>
 		<div id="mt-top-nohover">
-			<div id="mt-instructions">
-                <div>
-					Instructions: carefully trace around each instance of <span style='color:blue;font-size:18pt'>{{ image_to_annotate["CLASS_NAME"] }}</span>.
-                    <div>
-                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-1.png'></div>
-                        <div style='height:100px;border-width:2px;display:inline-block'><img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-2.png'></div>
-						<div>Not sure what <span style='color:blue;font-size:18pt'>{{ image_to_annotate["CLASS_NAME"] }}</span> is? Search with Google <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["CLASS_NAME"] }}'>here</a> to see examples!</div>
-                    </div>
+			<div id="mt-instructions-todo-fix-css-file" style="padding: 10px; padding-bottom: 0px; margin: 0px; float:left; width: 100%">
+				<div style="float:left; width:70%">
+
+				<div style="font-size: 16pt; font-weight: bold">Carefully trace around each instance of <span style='color:blue'>{{ image_to_annotate["CLASS_NAME"] }}</span><br>
 				</div>
-				<span class="pull-right">
-                    <!--					<button type="button" id='btn-submit' class="btn btn-primary" disabled="disabled">Submit</button>  -->
-				</span>
+				<!--<i>Created: {{ image_to_annotate["TIME_CREATED_DEBUG"] }}</i><br>-->
+				Not sure what <span style='color:blue;'>{{ image_to_annotate["CLASS_NAME"] }}</span> is? See Google Images <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["SEARCH_QUERY"] }}'>here</a>!
+
+				<div style="font-weight: bold">Instructions and tips:</div>
+				<ul>
+					<li>Remember to closely follow the object boundaries and please do not include tableware (bowls, plates, forks, etc.).</li>
+					<li>When more than <b>10</b> instances of the object are contiguous please trace around them as a group.</li>
+					<li>Use <span style='color:blue'>"Zoom In" (I)</span> for small objects. To undo a click, press <span style='color:blue'>"Undo" (Ctrl-Z)</span></li>
+					<li>Please trace <span style='color:red'>only one object</span> at a time.
+						<span style='color:red'>Draw multiple shapes if needed!! </span></li>
+				</ul>
+				</div>
+
+				<div style="float:right; width:30%">
+				<figure>
+				<div style='height:100px;border-width:2px;display:inline-block'>
+					<a href='../static/opensurfaces/examples/demo-food-segmentation-1.png' target="_blank">
+						<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-1.png'>
+					</a>
+				</div>
+			    <div style='height:100px;border-width:2px;display:inline-block'>
+					<a href='../static/opensurfaces/examples/demo-food-segmentation-2.png' target="_blank">
+						<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-2.png'>
+					</a>
+				</div>
+				<figcaption>Examples of good segmentations (click to open in new tab)</figcaption>
+				</figure>
+				</div>
 			</div>
 
 			<div id="ui-controls" class="ui-controls-top">
-                <div class="ui-controls-top">
-				<span class="btn-group" data-toggle="buttons-radio">
-					<button id='btn-draw' type="button" class="btn" disabled="disabled">
-						<i class="icon-pencil"></i> Draw (D)</button>
-					<button id='btn-edit' type="button" class="btn" disabled="disabled">
-						<i class="icon-move"></i> Adjust (A)</button>
-				</span>
-				<span class="btn-group">
-					<button id='btn-undo' type="button" disabled="disabled" class="btn">
-						<i class="icon-circle-arrow-left"></i> Undo (Ctrl-Z)</button>
-					<button id='btn-redo' type="button" disabled="disabled" class="btn">
-						<i class="icon-circle-arrow-right"></i> Redo (Ctrl-Y)</button>
-				</span>
-				<span class="btn-group">
-					<button id='btn-close' type="button" disabled="disabled" class="btn">
-						<i class="icon-ok-sign"></i> Close (Right-click)</button>
-					<button id='btn-delete' type="button" disabled="disabled" class="btn">
-						<i class="icon-remove"></i> Delete (Delete)</button>
-                </span>
-            </div>
-                <div class="ui-controls-top">
-                <span class="btn-group">
-					<button id='btn-zoom-in' type="button" class="btn">
-				    <i class="icon-resize-small"></i> Zoom In (I)</button>
-					<button id='btn-zoom-out' type="button" class="btn">
-				    <i class="icon-resize-small"></i> Zoom Out (O)</button>
-					<button id='btn-zoom-reset' type="button" class="btn">
-				    <i class="icon-resize-small"></i> Reset Zoom (ESC)</button>
-					<!--<a class="btn btn-warning" href="/segment/random">RANDOM</a>-->
-				</span>
-                </div>
-            </div>
-            <div class="ui-controls-top">
-            <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit" disabled="disabled">Submit</button>
-				<button class="btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btn-submit-noobj">No {{ image_to_annotate['CLASS_NAME'] }} in this image</button>
-                <a href="#modal-examples" role="button" id='btn-example' class="btn btn-primary" data-toggle="modal">Examples</a>
-                <a href="#modal-instructions" role="button" class="btn btn-primary" id='btn-instructions' data-toggle="modal">Instructions</a>
-                <div class="ui-controls-top" style='font-size:14pt'>
-                Tips: Using <span style='color:blue'>"Zoom In" (I) </span> for the small object!  <br>
-                Use <span style='color:blue'>Ctrl-Z</span> to undo a click. <br>
-                Please do <span style='color:red'>Only 1 object</span> at each turn. <br>
-                <span style='color:red'> Draw multiple polygons if needed!! </span><br>
 
+					<div class="ui-controls-top">
+					<span class="btn-group" data-toggle="buttons-radio">
+						<button id='btn-draw' type="button" class="btn" disabled="disabled">
+							<i class="icon-pencil"></i> Draw (D)</button>
+						<button id='btn-edit' type="button" class="btn" disabled="disabled">
+							<i class="icon-move"></i> Adjust (A)</button>
+					</span>
+					<span class="btn-group">
+						<button id='btn-undo' type="button" disabled="disabled" class="btn">
+							<i class="icon-circle-arrow-left"></i> Undo (Ctrl-Z)</button>
+						<button id='btn-redo' type="button" disabled="disabled" class="btn">
+							<i class="icon-circle-arrow-right"></i> Redo (Ctrl-Y)</button>
+					</span>
+					<span class="btn-group">
+						<button id='btn-close' type="button" disabled="disabled" class="btn">
+							<i class="icon-ok-sign"></i> Close (Right-click)</button>
+						<button id='btn-delete' type="button" disabled="disabled" class="btn">
+							<i class="icon-remove"></i> Delete (Delete)</button>
+					</span>
+					<span class="btn-group">
+						<button id='btn-zoom-in' type="button" class="btn">
+						<i class="icon-resize-small"></i> Zoom In (I)</button>
+						<button id='btn-zoom-out' type="button" class="btn">
+						<i class="icon-resize-small"></i> Zoom Out (O)</button>
+						<button id='btn-zoom-reset' type="button" class="btn">
+						<i class="icon-resize-small"></i> Reset Zoom (ESC)</button>
+						<!--<a class="btn btn-warning" href="/segment/random">RANDOM</a>-->
+					</span>
+				</div>
             </div>
+			<div class="ui-controls-top">
+			<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" id="btn-submit" disabled="disabled">Submit</button>
+			<button class="btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btn-submit-noobj">No matching item(s) in this image</button>
+			<a href="#modal-examples" role="button" id='btn-example' class="btn btn-primary" data-toggle="modal">Examples</a>
+			<a href="#modal-instructions" role="button" class="btn btn-primary" id='btn-instructions' data-toggle="modal">Instructions</a>
+			<!--<a href="#modal-feedback-email" role="button" id='btn-feedback' class="btn btn-primary" data-toggle="modal">Send Feedback</a>-->
+
+
             </div>
 
 		</div>
@@ -123,6 +139,20 @@ https://github.com/seanbell/opensurfaces
 <!-- END MAIN UI -->
 
 <!-- BEGIN MODALS -->
+	<!-- Feedback dialog -->
+	<div class="modal hide fade" id="modal-feedback-email" tabindex="-1" role="dialog"
+		aria-labelledby="modal-instructions-label" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal"
+				aria-hidden="true">&times;</button>
+            <h3>Send us your feedback</h3>
+		</div>
+		<div class="modal-body">
+			<div class="container-fluid">
+				<h2>Please send feedback to <b>email@EMAIL????</b></h2>
+            </div>
+        </div>
+	</div>
 	<!-- Examples dialog -->
 	<div class="modal hide fade" id="modal-examples" tabindex="-1" role="dialog"
 		aria-labelledby="modal-instructions-label" aria-hidden="true">
@@ -133,7 +163,6 @@ https://github.com/seanbell/opensurfaces
 		</div>
 		<div class="modal-body">
 			<div class="container-fluid">
-                <p>Not sure what the object "{{ image_to_annotate["CLASS_NAME"] }}" is? Click on <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["CLASS_NAME"] }}'>here</a> to see examples!</p>
 				<div class="row-fluid" style='width:200%'>
 					<div class="span4">
 						<div class="thumbnail">
@@ -176,7 +205,7 @@ https://github.com/seanbell/opensurfaces
                 Make the region as tight as possible.  <b>Your shape should closely
                     follow the object boundary.</b>
                 <!-- Use the &quot;adjust&quot; button (or press 'A') to improve the shape boundary.</p> -->
-                Draw multiple regions when the visible parts of object are disjointed. Below are examples of a person and a bike that should be split into two parts.
+                Draw multiple regions when the visible parts of the object are disjointed. Below are examples of a person and a bike that should be split into two parts.
                 <div class="row-fluid" style='width:100%'>
                     <div class="span4">
                         <div class="thumbnail">
@@ -290,7 +319,8 @@ https://github.com/seanbell/opensurfaces
                     </div>
                 </div>
                 <h2>Acknowledgements</h2>
-                    This UI is modified from OpenSurfaces Project created by Cornell Graphics and Vision Group.
+                    This UI is a modified version of the Microsoft COCO (Common Objects in Context) UI, which was
+					in turn based on the OpenSurfaces Project created by Cornell Graphics and Vision Group.
                 <br/>
             </div>
         </div>
@@ -468,7 +498,6 @@ https://github.com/seanbell/opensurfaces
  		// giving a fake photo_id
 		window.template_args = {
             // BEGIN: OPENSURFACE ADD-ON, ADDED BY Tsung-Yi Lin
-            // TODO how to set for each image???
             photo_url: "{{ image_to_annotate['IMAGE_URL'] }}",
             photo_id: "{{ image_to_annotate['IMAGE_ID'] }}"
             // END: OPENSURFACE ADD-ON, ADDED BY Tsung-Yi Lin
