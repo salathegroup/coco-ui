@@ -18,5 +18,12 @@
     "Description": "Qualification task - learn to trace paths around food items in an image",
     "Keywords": "image, category, classification, label, short",
     "TestDurationInSeconds": 300
+  },
+  "IMAGES": {
+    "URL_OF_S3_IMAGE_DIR": "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/",
+    "NUM_BING_IMAGES_PER_CLASS": 10,
+    "NUM_FOOD101_IMAGES_PER_CLASS": 10,
+    "FRAME_HEIGHT_PIXELS": 700,
+    "CLASS_IDS_TO_USE": [1009, 1967, 1986, 2237, 2277, 2924, 2930, 2931, 2939, 2941]
   }
 }
