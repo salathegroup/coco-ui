@@ -7,7 +7,7 @@
     "Description": "Trace a path around each instance of a specified food item in this image",
     "Keywords": "image, category, classification, label, short",
     "Reward": "0.10",
-    "MaxAssignments": 1,
+    "MaxAssignments": 4,
     "LifetimeInSeconds": 172800,
     "AssignmentDurationInSeconds": 600,
     "AutoApprovalDelayInSeconds": 86400,
