@@ -42,6 +42,8 @@ if HIT["USE_SANDBOX"]:
     mturk_url = "https://workersandbox.mturk.com/"
 else:
     print("create HIT on mturk")
+    input("DOUBLE CHECK THAT YOU ARE READY TO PUSH REAL HITs: PRESS A KEY or STOP NOW!")
+    print("OK")
     endpoint_url = "https://mturk-requester.us-east-1.amazonaws.com"
     mturk_form_action = "https://www.mturk.com/mturk/externalSubmit"
     mturk_url = "https://worker.mturk.com/"
@@ -136,25 +138,78 @@ def create_xml_question(html_text):
 
 # Retrieve metadata for classes from MyFoodRepo graph
 map_class_id_to_node = get_classnames_bing_food101()
+num_bing = dict()
+for class_id in map_class_id_to_node:
+    node = map_class_id_to_node[class_id]  # JSON with names, dataset ids, etc.
+
+    # Get metadata needed for mTurk task
+    display_name = node['display_name_translations']['en']
+    search_query = node['search_terms']
+
+    # Loop through the images folder for this class
+
+    # Get S3 URLs of some/all images
+    # TODO proper path construction for when bucket is organized
+    # in the form: bucket/images/class_id/bing_id_or_food101_id/image_id.jpg ???
+    # Get the image IDs
+    bing_images = []
+    if 'bing_crawl_2017' in node:
+        bing_images.extend(map_bing_id_to_image_ids[node['bing_crawl_2017']])
+
+    food_101_images = []
+    if 'food_101' in node:
+        food_101_images.extend(map_food_101_id_to_image_ids[node['food_101']])
+
+    print("Number of images for class", display_name, class_id, ": bing=", len(bing_images), "food101=", len(food_101_images))
+    num_bing[class_id] = (display_name, len(bing_images))
+#
+# for k,v in sorted(num_bing.items(), key=lambda x: x[1][1]):
+#     print(v[1])
+# assert 1==0
 
 hits = {}
 
 qual_HIT = config['QUALIFICATION_HIT']
 
 # TODO shouldn't really be here, clears/disables existing qualification tests!
-clear_qualifications(mturk)
+if HIT["USE_SANDBOX"]:
+    clear_qualifications(mturk)
 
-qual_response = mturk.create_qualification_type(Name=qual_HIT["Title"],
-                                                Keywords=qual_HIT["Keywords"],
-                                                Description=qual_HIT["Description"],
-                                                QualificationTypeStatus='Active',
-                                                Test=questions,
-                                                AnswerKey=answers,
-                                                TestDurationInSeconds=qual_HIT["TestDurationInSeconds"])
+existing_qualification_tests = mturk.list_qualification_types(Query=qual_HIT["Title"],
+                                                              MustBeRequestable=True,
+                                                              MustBeOwnedByCaller=True)
+assert existing_qualification_tests['NumResults'] < 2, "somehow have duplicate qualification types (naming issues?)"
+
+if existing_qualification_tests['NumResults'] == 0:
+    qual_response = mturk.create_qualification_type(Name=qual_HIT["Title"],
+                                                    Keywords=qual_HIT["Keywords"],
+                                                    Description=qual_HIT["Description"],
+                                                    QualificationTypeStatus='Active',
+                                                    Test=questions,
+                                                    AnswerKey=answers,
+                                                    TestDurationInSeconds=qual_HIT["TestDurationInSeconds"])
+else:
+    qualification_type_id = existing_qualification_tests['QualificationTypes'][0]['QualificationTypeId']
+    qual_response = mturk.update_qualification_type(QualificationTypeId=qualification_type_id,
+                                                    Description=qual_HIT["Description"],
+                                                    QualificationTypeStatus='Active',
+                                                    Test=questions,
+                                                    AnswerKey=answers,
+                                                    TestDurationInSeconds=qual_HIT["TestDurationInSeconds"])
+    # TODO force anyone that had the qualification before to re-qualify? OR update their qualification?
 
 qualification_type_id = qual_response['QualificationType']['QualificationTypeId']
 
 # Create 1 HIT for each image in each class
+
+# TODO use the same images as before
+# for image_id in image_ids_to_use:
+#     class_id = map_image_id_to_class[image_id]
+previous_hits = json.load(open("hits/2018_07_12_16:26:01_hits.json"))
+previous_image_ids_used = []
+for hit, hit_info in previous_hits.items():
+    image_id = hit_info["IMAGE_ID"]
+    previous_image_ids_used.append(image_id)
 
 for class_id in class_ids_to_use:
     node = map_class_id_to_node[class_id]  # JSON with names, dataset ids, etc.
@@ -180,7 +235,11 @@ for class_id in class_ids_to_use:
     print("Number of images for class", display_name, class_id, ": bing=", len(bing_images), "food101=", len(food_101_images))
 
     # Create hits with the first X bing images and first Y food101 images
-    image_ids_to_use_for_this_class = bing_images[:NUM_BING_IMAGES_PER_CLASS] + food_101_images[:NUM_FOOD101_IMAGES_PER_CLASS]
+    # image_ids_to_use_for_this_class = bing_images[:NUM_BING_IMAGES_PER_CLASS] + food_101_images[:NUM_FOOD101_IMAGES_PER_CLASS]
+
+    # TODO reusing same images as previous experiment
+    image_ids_to_use_for_this_class = [image_id for image_id in previous_image_ids_used
+                                       if image_id in bing_images or image_id in food_101_images]
     print(len(image_ids_to_use_for_this_class), "images will be used for class", class_id)
 
     for image_id in image_ids_to_use_for_this_class:  # TODO only using some images per class right now during testing

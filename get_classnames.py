@@ -9,8 +9,7 @@ We expect
 import requests
 
 
-def get_classnames_bing_food101():
-    """TODO this should not be a single function, too many decisions"""
+def get_food_graph():
     endpoint = "https://www.myfoodrepo.org/api/v1/food_case_foods/graph"
     resp = requests.get(endpoint)
 
@@ -19,6 +18,24 @@ def get_classnames_bing_food101():
 
     print(graph)
     print(len(graph['nodes']), "nodes in food graph")
+    return graph
+
+
+def get_all_machine_learn_nodes():
+    """Get all nodes marked with 'should_machine_learn' as a dict"""
+    map_class_id_to_node = dict()
+    graph = get_food_graph()
+    for node in graph['nodes']:
+        if node.get('should_machine_learn', False):  # check that this field exists and is set to True]
+            class_id = node['id']
+            map_class_id_to_node[class_id] = node
+
+    return map_class_id_to_node
+
+
+def get_classnames_bing_food101():
+    """TODO this should not be a single function, too many decisions"""
+    graph = get_food_graph()
 
     #print(len([node for node in graph['nodes'] if 'food_101' in node]))
 
@@ -58,10 +75,10 @@ def get_classnames_bing_food101():
                 # map_bing_id_to_search_terms[bing_id] = search_query
                 # map_food_101_id_to_name[food_101_id] = display_name
                 # map_food_101_id_to_search_terms[food_101_id] = search_query
-
-    print(len(map_class_id_to_node), "classes that occur in food101 AND bing")
-    for class_id, node in map_class_id_to_node.items():
-        print(class_id, node['display_name_translations']['en'])
+    #
+    # print(len(map_class_id_to_node), "classes that occur in food101 AND bing")
+    # for class_id, node in map_class_id_to_node.items():
+    #     print(class_id, node['display_name_translations']['en'])
     #
     # print("Longest names")
     # print("bing", max(map_bing_id_to_name.values(), key=lambda x: len(x)))
