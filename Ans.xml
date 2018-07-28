@@ -42,10 +42,30 @@
 </AnswerOption>
 </Question>
 
+<Question>
+<QuestionIdentifier>only_include_indicated_item</QuestionIdentifier>
+<AnswerOption>
+<SelectionIdentifier>Q3a</SelectionIdentifier>
+<AnswerScore>0</AnswerScore>
+</AnswerOption>
+<AnswerOption>
+<SelectionIdentifier>Q3b</SelectionIdentifier>
+<AnswerScore>0</AnswerScore>
+</AnswerOption>
+<AnswerOption>
+<SelectionIdentifier>Q3c</SelectionIdentifier>
+<AnswerScore>0</AnswerScore>
+</AnswerOption>
+<AnswerOption>
+<SelectionIdentifier>Q3d</SelectionIdentifier>
+<AnswerScore>1</AnswerScore>
+</AnswerOption>
+</Question>
+
 
 <QualificationValueMapping>
 <PercentageMapping>
-<MaximumSummedScore>2</MaximumSummedScore>
+<MaximumSummedScore>3</MaximumSummedScore>
 </PercentageMapping>
 </QualificationValueMapping>
 </AnswerKey>
