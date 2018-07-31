@@ -52,7 +52,7 @@ Please read these instructions carefully and take a short quiz before starting t
         <img alt="sloppy tracing" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/sloppy_tracing.png" height="200" />
     </li>
     <li>
-        This user only traced one <b>pizza</b> of the two that appear in the image.
+        This user traced the burger but not the fries.
         <img alt="missing instance" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/missing_instance.png" height="200" />
     </li>
     <li>
