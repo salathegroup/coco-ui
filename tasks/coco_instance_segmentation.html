@@ -56,51 +56,65 @@ https://github.com/seanbell/opensurfaces
     <script>document.getElementById('assignmentId').value = assignmentID;</script>
 	<div id='content-container'>
 		<div id="mt-top-nohover">
-			<div id="mt-instructions-todo-fix-css-file" style="padding: 10px; padding-bottom: 0px; margin: 0px; float:left; width: 100%">
-				<div style="float:left; width:70%">
-
-				<div style="font-size: 16pt; font-weight: bold">Please carefully trace around <span style='color:blue'>each food item</span> you see in this image.<br>
-					<!--, which should include {{ image_to_annotate["CLASS_NAME"] }}<br>-->
-				</div>
-				<!--<i>Created: {{ image_to_annotate["TIME_CREATED_DEBUG"] }}</i><br>-->
-				This image should include {{ image_to_annotate["CLASS_NAME"] }}. If it contains other food items please trace them separately.<a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["SEARCH_QUERY"] }}'>See examples on Google Images</a>
-					<!--Not sure what <span style='color:blue;'>{{ image_to_annotate["CLASS_NAME"] }}</span> is? See Google Images <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["SEARCH_QUERY"] }}'>here</a>!-->
-
-				<div style="font-weight: bold">Instructions and tips:</div>
-				<ul>
-					<li>Remember to closely follow the boundaries of each food item and please do not include tableware (bowls, plates, forks, etc.).</li>
-					<li>When more than <b>10</b> instances of an item (for example grapes) are contiguous please trace around them as a group.</li>
-					<li>Use <span style='color:blue'>"Zoom In" (I)</span> for small items. To undo a click, press <span style='color:blue'>"Undo" (Ctrl-Z)</span></li>
-					<li>Please trace <span style='color:red'>only one item</span> at a time.
-						<span style='color:red'>Draw several shapes if needed!! </span></li>
-				</ul>
-				</div>
-
-				<div style="float:right; width:30%">
-				<figure>
-				<div style='height:100px;border-width:2px;display:inline-block'>
-					<a href='../static/opensurfaces/examples/demo-food-segmentation-1.png' target="_blank">
-						<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-1.png'>
-					</a>
-				</div>
-			    <!--<div style='height:100px;border-width:2px;display:inline-block'>-->
-					<!--<a href='../static/opensurfaces/examples/demo-food-segmentation-2.png' target="_blank">-->
-						<!--<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-2.png'>-->
-					<!--</a>-->
+			<div id="mt-instructions-todo-fix-css-file" style="padding: 10px; padding-bottom: 0px; margin: 0px; float:left; width: 1200px; max-height:180px; overflow: hidden">
+				<!--<div id="instructions-collapsed">-->
+					<!--<div style="float:left; width:70%">-->
+						<!--<div style="font-size: 16pt; font-weight: bold">Please carefully trace around <span style='color:blue'>each food item</span> you see in this image.<br>-->
+							<!--&lt;!&ndash;, which should include {{ image_to_annotate["CLASS_NAME"] }}<br>&ndash;&gt;-->
+						<!--</div>-->
+						<!--<a id="show-instructions-link" href="#">Show full instructions</a>-->
+					<!--</div>-->
 				<!--</div>-->
-				<div style='height:100px;border-width:2px;display:inline-block'>
-				<a href='../static/opensurfaces/examples/demo-food-segmentation-2.png' target="_blank">
-					<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-3.png'>
-				</a>
-			</div>
-				<figcaption>Examples of good segmentations (click to open in new tab)</figcaption>
-				</figure>
+				<!--<div id="instructions-shown" style="display:none">-->
+				<div id="instructions-shown">
+					<div style="float:left; width:70%">
+
+						<div style="font-size: 16pt; font-weight: bold; padding-bottom: 3px">Please carefully trace around <span style='color:blue'>each food item</span> you see in this image.<br>
+							<!--, which should include {{ image_to_annotate["CLASS_NAME"] }}<br>-->
+						</div>
+
+						<div style="/*font-size: 1vw; line-height: 1vw*/">
+							<!--<i>Created: {{ image_to_annotate["TIME_CREATED_DEBUG"] }}</i><br>-->
+							<!--Not sure what <span style='color:blue;'>{{ image_to_annotate["CLASS_NAME"] }}</span> is? See Google Images <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["SEARCH_QUERY"] }}'>here</a>!-->
+
+							<!--This image should include {{ image_to_annotate["CLASS_NAME"] }}. If it contains other food items please trace them separately. <a target='blank' href='https://www.google.com/search?hl=en&authuser=0&site=imghp&tbm=isch&q={{ image_to_annotate["SEARCH_QUERY"] }}'>See examples on Google Images</a>-->
+							<!--<br>-->
+
+							<b>Instructions and tips:</b>
+							<ul>
+								<li>Remember to closely follow the boundaries of each food item and please do not include tableware (bowls, plates, forks, etc.).</li>
+								<li>When more than <b>10</b> instances of an item (for example grapes) are contiguous please trace around them as a group.</li>
+								<li>Use <span style='color:blue'>"Zoom In" (I)</span> for small items. To undo a click, press <span style='color:blue'>"Undo" (Ctrl-Z)</span></li>
+								<li>Please trace <span style='color:red'>only one item</span> at a time.
+									<span style='color:red'>Draw several shapes if needed!! </span></li>
+							</ul>
+						</div>
+					</div>
+					<div style="float:right; width:30%">
+					<figure>
+						<div style='max-height:100px;border-width:2px;display:inline-block'>
+							<a href='../static/opensurfaces/examples/demo-food-segmentation-1.png' target="_blank">
+								<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-1.png'>
+							</a>
+						</div>
+						<!--<div style='height:100px;border-width:2px;display:inline-block'>-->
+						<!--<a href='../static/opensurfaces/examples/demo-food-segmentation-2.png' target="_blank">-->
+						<!--<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-2.png'>-->
+						<!--</a>-->
+						<!--</div>-->
+						<div style='max-height:100px;border-width:2px;display:inline-block'>
+							<a href='../static/opensurfaces/examples/demo-food-segmentation-3.png' target="_blank">
+								<img style='height:100px' src='../static/opensurfaces/examples/demo-food-segmentation-3.png'>
+							</a>
+						</div>
+						<figcaption>Good examples (click to open in new tab)</figcaption>
+					</figure>
+				</div>
 				</div>
 			</div>
 
 			<div id="ui-controls" class="ui-controls-top">
-
-					<div class="ui-controls-top">
+                <div class="ui-controls-top">
 					<span class="btn-group" data-toggle="buttons-radio">
 						<button id='btn-draw' type="button" class="btn" disabled="disabled">
 							<i class="icon-pencil"></i> Draw (D)</button>
@@ -119,6 +133,10 @@ https://github.com/seanbell/opensurfaces
 						<button id='btn-delete' type="button" disabled="disabled" class="btn">
 							<i class="icon-remove"></i> Delete (Delete)</button>
 					</span>
+
+                </div>
+                <div class="ui-controls-top">
+
 					<span class="btn-group">
 						<button id='btn-zoom-in' type="button" class="btn">
 						<i class="icon-resize-small"></i> Zoom In (I)</button>
@@ -529,6 +547,12 @@ https://github.com/seanbell/opensurfaces
 	<!-- compiled coffeescript -->
 	<script type="text/javascript" src="../static/opensurfaces/js/build-coffee-coco.js"></script>
 <!-- END MAIN SCRIPTS -->
+	<!--<script type="text/javascript">-->
+		<!--$('#show-instructions-link').click(function() {-->
+		    <!--$('#instructions-collapsed').attr('style', 'display:none');-->
+		    <!--$('#instructions-shown').removeAttr('style');-->
+		<!--});-->
+	<!--</script>-->
 
 </body>
 </html>
