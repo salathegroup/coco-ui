@@ -1,14 +1,14 @@
 {
   "STATIC_ROOT": "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/new_statics",
   "HIT": {
-    "USE_SANDBOX": false,
+    "USE_SANDBOX": true,
     "REGION_NAME": "us-east-1",
     "Title": "Trace the food items in an image",
     "Description": "Trace a path around each food item in this image",
     "Keywords": "image, category, classification, label, short",
-    "Reward": "0.15",
-    "MaxAssignments": 3,
-    "LifetimeInSeconds": 172800,
+    "Reward": "0.12",
+    "MaxAssignments": 1,
+    "LifetimeInSeconds": 31536000,
     "AssignmentDurationInSeconds": 600,
     "AutoApprovalDelayInSeconds": 259200,
     "Question": "tasks/coco_instance_segmentation.html"
@@ -16,14 +16,14 @@
   "QUALIFICATION_HIT": {
     "Title": "Instructional quiz for tracing food items",
     "Description": "Qualification task - learn to trace paths around food items in an image",
-    "Keywords": "image, category, classification, label, short",
+    "Keywords": "image, category, classification, label, object, recognition, tracing, segmentation",
     "TestDurationInSeconds": 600
   },
   "IMAGES": {
     "URL_OF_S3_IMAGE_DIR": "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/",
-    "NUM_BING_IMAGES_PER_CLASS": 10,
-    "NUM_FOOD101_IMAGES_PER_CLASS": 10,
+    "NUM_BING_IMAGES_PER_CLASS": 0,
+    "NUM_FOOD101_IMAGES_PER_CLASS": 200,
     "FRAME_HEIGHT_PIXELS": 700,
-    "CLASS_IDS_TO_USE": [1009, 1967, 1986, 2237, 2277, 2924, 2930, 2931, 2939, 2941]
+    "CLASS_IDS_TO_USE": []
   }
 }

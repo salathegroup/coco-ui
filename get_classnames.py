@@ -16,7 +16,7 @@ def get_food_graph():
     assert resp.status_code == 200
     graph = resp.json()['data']['food_graph']
 
-    print(graph)
+    # print(graph)
     print(len(graph['nodes']), "nodes in food graph")
     return graph
 
@@ -26,7 +26,7 @@ def get_all_machine_learn_nodes():
     map_class_id_to_node = dict()
     graph = get_food_graph()
     for node in graph['nodes']:
-        if node.get('should_machine_learn', False):  # check that this field exists and is set to True]
+        if node.get('should_machine_learn', False):  # check that this field exists and is set to True
             class_id = node['id']
             map_class_id_to_node[class_id] = node
 
