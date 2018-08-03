@@ -69,7 +69,7 @@ https://github.com/seanbell/opensurfaces
 				<div id="instructions-shown">
 					<div style="float:left; width:70%">
 
-						<div style="font-size: 16pt; font-weight: bold; padding-bottom: 3px">Please carefully trace around <span style='color:blue'>each food item</span> you see in this image.<br>
+						<div style="font-size: 16pt; font-weight: bold; padding-bottom: 3px">Please trace closely around <span style='color:blue'>each food item</span> you see in this image.<br>
 							<!--, which should include {{ image_to_annotate["CLASS_NAME"] }}<br>-->
 						</div>
 
@@ -83,10 +83,10 @@ https://github.com/seanbell/opensurfaces
 							<b>Instructions and tips:</b>
 							<ul>
 								<li>Remember to closely follow the boundaries of each food item and please do not include tableware (bowls, plates, forks, etc.).</li>
+                                <li><span style='color:red'>Draw several shapes if needed!! </span>Use the <b>Finish current shape</b> button to start a new shape.</li>
 								<li>When more than <b>10</b> instances of an item (for example grapes) are contiguous please trace around them as a group.</li>
-								<li>Use <span style='color:blue'>"Zoom In" (I)</span> for small items. To undo a click, press <span style='color:blue'>"Undo" (Ctrl-Z)</span></li>
-								<li>Please trace <span style='color:red'>only one item</span> at a time.
-									<span style='color:red'>Draw several shapes if needed!! </span></li>
+                                <li>Please trace <span style='color:red'>only one item</span> at a time. <span style='color:red'><b>Even if two different food items are next to each other, draw two shapes!</b></span></li>
+								<li>Make sure that your window is large enough to see the full image.</li>
 							</ul>
 						</div>
 					</div>
@@ -121,21 +121,22 @@ https://github.com/seanbell/opensurfaces
 						<button id='btn-edit' type="button" class="btn" disabled="disabled">
 							<i class="icon-move"></i> Adjust (A)</button>
 					</span>
-					<span class="btn-group">
-						<button id='btn-undo' type="button" disabled="disabled" class="btn">
-							<i class="icon-circle-arrow-left"></i> Undo (Ctrl-Z)</button>
-						<button id='btn-redo' type="button" disabled="disabled" class="btn">
-							<i class="icon-circle-arrow-right"></i> Redo (Ctrl-Y)</button>
-					</span>
+
 					<span class="btn-group">
 						<button id='btn-close' type="button" disabled="disabled" class="btn">
-							<i class="icon-ok-sign"></i> Close (Right-click)</button>
+							<i class="icon-ok-sign"></i> Finish current shape (Right-click)</button>
 						<button id='btn-delete' type="button" disabled="disabled" class="btn">
 							<i class="icon-remove"></i> Delete (Delete)</button>
 					</span>
 
                 </div>
                 <div class="ui-controls-top">
+					<span class="btn-group">
+						<button id='btn-undo' type="button" disabled="disabled" class="btn">
+							<i class="icon-circle-arrow-left"></i> Undo (Ctrl-Z)</button>
+						<button id='btn-redo' type="button" disabled="disabled" class="btn">
+							<i class="icon-circle-arrow-right"></i> Redo (Ctrl-Y)</button>
+					</span>
 
 					<span class="btn-group">
 						<button id='btn-zoom-in' type="button" class="btn">
