@@ -22,6 +22,8 @@ NUM_BING_IMAGES_PER_CLASS = config["IMAGES"]["NUM_BING_IMAGES_PER_CLASS"]
 NUM_FOOD101_IMAGES_PER_CLASS = config["IMAGES"]["NUM_FOOD101_IMAGES_PER_CLASS"]
 FRAME_HEIGHT_PIXELS = config["IMAGES"]["FRAME_HEIGHT_PIXELS"]
 SAVE_HIT_HTML = True
+MTURK_APPROVAL_RATE_QUAL_TYPE_ID = "000000000000000000L0"
+MTURK_WORKER_NUMBER_HITS_APPROVED_QUAL_TYPE_ID = "00000000000000000040"
 
 # Create qualification task with these questions and answers
 questions = open('Ques_Form.xml', 'r').read()
@@ -46,6 +48,7 @@ else:
     endpoint_url = "https://mturk-requester.us-east-1.amazonaws.com"
     mturk_form_action = "https://www.mturk.com/mturk/externalSubmit"
     mturk_url = "https://worker.mturk.com/"
+
 
 # boto3 mturk client
 aws_key = json.load(open("keys.json"))
@@ -141,6 +144,31 @@ hits = {}
 
 qual_HIT = config['QUALIFICATION_HIT']
 
+# Create a separate qualification to exclude workers who we don't want working on this task
+# (but might not have officially blocked)
+exclusion_qualification_name = 'EXCL_SEGMENTATION'
+existing_exclusion_qualification = mturk.list_qualification_types(Query=exclusion_qualification_name,
+                                                                  MustBeRequestable=False,
+                                                                  MustBeOwnedByCaller=True)
+if existing_exclusion_qualification['NumResults'] == 0:
+    response = mturk.create_qualification_type(
+        Name=exclusion_qualification_name,
+        Description='internal',
+        QualificationTypeStatus='Active'
+    )
+    MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID = response['QualificationType']['QualificationTypeId']
+else:
+    MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID = existing_exclusion_qualification['QualificationTypes'][0]['QualificationTypeId']
+
+# Associate qualification with all known bad workers
+if not HIT["USE_SANDBOX"]:
+    bad_workers = json.load(open("bad_workers.json"))
+    for worker_id in bad_workers:
+        # Silently grant the bad workers our exclusion qualification
+        mturk.associate_qualification_with_worker(QualificationTypeId=MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID,
+                                                  WorkerId=worker_id,
+                                                  SendNotification=False)
+
 # TODO shouldn't really be here, clears/disables existing qualification tests!
 # if HIT["USE_SANDBOX"]:
 #     clear_qualifications(mturk)
@@ -173,7 +201,7 @@ qualification_type_id = qual_response['QualificationType']['QualificationTypeId'
 
 # Create 1 HIT for each image in each class
 
-# TODO if using the same images as before
+# NOTE if using the same images as before
 # for image_id in image_ids_to_use:
 #     class_id = map_image_id_to_class[image_id]
 # previous_hits = json.load(open("hits/2018_07_12_16:26:01_hits.json"))
@@ -194,7 +222,35 @@ for class_id, node in map_class_id_to_node.items():
 
 print("Classes to use:", len(class_ids_to_use), class_ids_to_use)
 
+
+def get_image_ids_already_labeled():
+    """Returns a list of the image IDs that have been labeled (may have duplicates!)"""
+    # TODO add next rounds of HITs here? need better way to avoid relabeling the same images
+    filenames = ["hits/2018_07_31_15:05:09_hits.json"]
+    image_ids_already_labeled = []
+    for filename in filenames:
+        print("Checking previous HIT file '%s' for image IDs to avoid in this run" % filename)
+        previous_hits = json.load(open(filename))
+        image_ids_already_labeled.extend(hit["IMAGE_ID"] for hk, hit in previous_hits.items())
+    return image_ids_already_labeled
+
+
+image_ids_already_labeled = get_image_ids_already_labeled()
+seen = set()
+dups = []
+for x in image_ids_already_labeled:
+    if x in seen:
+        dups.append(x)
+    else:
+        seen.add(x)
+print(len(dups), 'duplicate image ids', dups)
+
+# Make it a set for speed
+image_ids_already_labeled = set(image_ids_already_labeled)
+print("HITs previously created for ", len(image_ids_already_labeled), "image IDs")
+
 total_num_images = 0
+
 for class_id in class_ids_to_use:
     node = map_class_id_to_node[class_id]  # JSON with names, dataset ids, etc.
 
@@ -213,16 +269,23 @@ for class_id in class_ids_to_use:
 
     print("Number of images for class", display_name, class_id, ": bing=", len(bing_images), "food101=", len(food_101_images))
 
-    # Create hits with the first X bing images and first Y food101 images
+    # Create hits with the first X bing images and first Y food101 images that have NOT already been labeled!
+    bing_images = [b for b in bing_images if b not in image_ids_already_labeled]
+    food_101_images = [f for f in food_101_images if f not in image_ids_already_labeled]
+
     image_ids_to_use_for_this_class = bing_images[:NUM_BING_IMAGES_PER_CLASS] + food_101_images[:NUM_FOOD101_IMAGES_PER_CLASS]
-    # # TODO if reusing same images as previous experiment
+    # if reusing same images as previous experiment
     # image_ids_to_use_for_this_class = [image_id for image_id in previous_image_ids_used
     #                                    if image_id in bing_images or image_id in food_101_images]
     print(len(image_ids_to_use_for_this_class), "images will be used for class", class_id)
+
+    # Update the set of image IDs for which we have/will have labels
+    image_ids_already_labeled.update(image_ids_to_use_for_this_class)
+
     total_num_images += len(image_ids_to_use_for_this_class)
 
-    # Loop through the images folder for this class
-    for image_id in image_ids_to_use_for_this_class:  # TODO only using some images per class right now during testing
+    # Loop through the images for this class and create one HIT per image
+    for image_id in image_ids_to_use_for_this_class:
         image_url = image_id_to_url[image_id]
 
         # Use this dict to fill the HTML template
@@ -230,10 +293,11 @@ for class_id in class_ids_to_use:
             "IMAGE_ID": image_id,
             "IMAGE_URL": image_url,
             "CLASS_NAME": display_name,
+            "CLASS_ID": class_id,
             "SEARCH_QUERY": search_query,
             "TIME_CREATED_DEBUG": strftime("%Y_%m_%d_%H:%M:%S ", gmtime())
         }
-        print(temp_dict)
+        # print(temp_dict)
 
         # Template stored in tasks/
         template_dir_loader = FileSystemLoader('tasks')
@@ -268,6 +332,15 @@ for class_id in class_ids_to_use:
             QualificationRequirements=[{'QualificationTypeId': qualification_type_id,
                                         'Comparator': 'EqualTo',
                                         'IntegerValues': [100]},
+                                       {'QualificationTypeId': MTURK_WORKER_NUMBER_HITS_APPROVED_QUAL_TYPE_ID,
+                                        'Comparator': 'GreaterThan',
+                                        'IntegerValues': [100]},
+                                       {'QualificationTypeId': MTURK_APPROVAL_RATE_QUAL_TYPE_ID,
+                                        'Comparator': 'GreaterThan',
+                                        'IntegerValues': [98]},
+                                       {'QualificationTypeId': MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID,
+                                        'Comparator': 'DoesNotExist'
+                                        }
                                        ]
         )
 
@@ -280,8 +353,9 @@ for class_id in class_ids_to_use:
             temp_dict[key] = new_hit['HIT'][key]
         hits[new_hit['HIT']['HITId']] = temp_dict
 
-print(total_num_images, "total images to create HITs for")
 print("Created", len(hits), "hits")
+print(total_num_images, "total_num_images (will become hits)")
+print(len(image_ids_already_labeled), "image_ids_already_labeled (num unique image IDs from this and prev. scripts")
 
 hits_filename = "hits/" + strftime("%Y_%m_%d_%H:%M:%S_", gmtime()) + "hits.json"
 if not os.path.exists("hits"):
