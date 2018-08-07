@@ -6,11 +6,11 @@
     "Title": "Trace the food items in an image",
     "Description": "Trace a path around each food item in this image",
     "Keywords": "image, category, classification, label, short",
-    "Reward": "0.12",
+    "Reward": "0.10",
     "MaxAssignments": 1,
     "LifetimeInSeconds": 31536000,
     "AssignmentDurationInSeconds": 600,
-    "AutoApprovalDelayInSeconds": 259200,
+    "AutoApprovalDelayInSeconds": 432000,
     "Question": "tasks/coco_instance_segmentation.html"
   },
   "QUALIFICATION_HIT": {
