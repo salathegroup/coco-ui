@@ -12,8 +12,8 @@ Please read these instructions carefully and take a short quiz before starting t
 <ul>
     <li>In the task, you will use the tracing tool to draw a shape around each food item that appears in the image.</li>
     <li>By food item, we mean recognizable foods or dishes like <b>apple pie</b>, <b>pizza</b>, <b>carrot</b>, <b>salad</b>, etc.</li>
-    <li>We will provide an example of a food item that we think is present in the image.</li>
-    <li>If you're not sure what this example item, please use the search tool to look at example images.</li>
+    <li>We may provide an example of a food item that we think is present in the image.</li>
+    <li>If you're not sure what this example item is, please use the search tool to look at example images.</li>
     <li>If there are no food items of any kind in the image, click the <b>No food item(s) in this image</b> button to flag it.</li>
     <li>
         <b>You should usually trace each item separately</b>,
@@ -22,6 +22,14 @@ Please read these instructions carefully and take a short quiz before starting t
     </li>
     <li><b>Please do not include tableware (bowls, plates, forks, etc.).</b></li>
     <li>Your shapes should closely follow the object boundaries, so use the <b>Zoom</b> button if needed!</li>
+</ul>
+
+<h2>What to expect from us</h2>
+<ul>
+    <li>The vast majority of workers have done a great job on our task so far.</li>
+    <li>Expect to spend an average of around 45 seconds per task, but remember that some images will require much more time than others.</li>
+    <li>We have unfortunately had to reject assignments by workers who submitted careless work.</li>
+    <li>Please contact us if something is unclear!</li>
 </ul>
 
 <h2>Good examples</h2>
@@ -35,14 +43,19 @@ Please read these instructions carefully and take a short quiz before starting t
         <img alt="cookies" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/cookies_separate.png" height="200" />
     </li>
     <li>
-        This user traced carefully around each of the two sandwiches.
+        This user traced carefully around each of the two sandwiches as two <b>separate</b> shapes.
         <img alt="good: separation of instances" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/trace_instances_separately_good_example.png" height="200" />
     </li>
 </ul>
 
 
-<h2>Bad examples that will be rejected</h2>
+<h2>Bad examples that have been rejected</h2>
 <ul>
+    <li>
+        This user did not verify that the bottom of the image was visible.
+        Make sure your window is big enough to see the full image!
+        <img alt="missed bottom of image" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/screen_too_small.png" height="200" />
+    </li>
     <li>
         This user did not trace the two sandwiches separately.
         <img alt="bad: grouping of two instances" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/trace_instances_separately_bad_example.png" height="200" />
@@ -52,12 +65,12 @@ Please read these instructions carefully and take a short quiz before starting t
         <img alt="sloppy tracing" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/sloppy_tracing.png" height="200" />
     </li>
     <li>
-        This user traced the burger but not the fries.
+        This user traced the burger but did not create a second shape for the fries.
         <img alt="missing instance" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/missing_instance.png" height="200" />
     </li>
     <li>
         This image needs to be segmented into several pieces - one segment per piece of meat, one for the lemon,
-        and one for each piece of potato.
+        and one for each piece of potato. <b>When in doubt, create separate shapes!</b>
         <img alt="needs separate segments for each food item" src="https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/static_qualification/includes_extraneous_foods_and_not_split.png" height="200" />
     </li>
 </ul>
