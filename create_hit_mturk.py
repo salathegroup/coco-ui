@@ -16,6 +16,12 @@ from clear_hits_quals import clear_qualifications
 # Load config for this task
 config = json.load(open("configs/config_instance_segmentation.json"))
 
+# Check previous runs to avoid relabeling images
+PREVIOUS_HIT_BATCHES_JSON_FILENAMES = [
+    "hits/2018_07_31_15:05:09_hits.json",  # round 1 11800 HITs
+    "hits/2018_08_07_16\:40\:25_hits.json"  # round 2 11600 HITs
+]
+
 # PARAMETERS
 URL_OF_S3_IMAGE_DIR = config["IMAGES"]["URL_OF_S3_IMAGE_DIR"]
 NUM_BING_IMAGES_PER_CLASS = config["IMAGES"]["NUM_BING_IMAGES_PER_CLASS"]
@@ -226,7 +232,7 @@ print("Classes to use:", len(class_ids_to_use), class_ids_to_use)
 def get_image_ids_already_labeled():
     """Returns a list of the image IDs that have been labeled (may have duplicates!)"""
     # TODO add next rounds of HITs here? need better way to avoid relabeling the same images
-    filenames = ["hits/2018_07_31_15:05:09_hits.json"]
+    filenames = PREVIOUS_HIT_BATCHES_JSON_FILENAMES
     image_ids_already_labeled = []
     for filename in filenames:
         print("Checking previous HIT file '%s' for image IDs to avoid in this run" % filename)
@@ -250,6 +256,7 @@ image_ids_already_labeled = set(image_ids_already_labeled)
 print("HITs previously created for ", len(image_ids_already_labeled), "image IDs")
 
 total_num_images = 0
+num_hits_created = 0
 
 for class_id in class_ids_to_use:
     node = map_class_id_to_node[class_id]  # JSON with names, dataset ids, etc.
@@ -345,6 +352,8 @@ for class_id in class_ids_to_use:
         )
 
         # print(new_hit)
+        num_hits_created += 1
+        print("Num hits created so far:", num_hits_created)
         print("HITId: " + new_hit['HIT']['HITId'])
         print("A new HIT has been created. You can preview it here:")
         print(mturk_url + "mturk/preview?groupId=" + new_hit['HIT']['HITGroupId'])
