@@ -6,6 +6,11 @@ This project includes all the files needed to collect food image segmentations
 from MTurk and use these to create a COCO dataset. 
 For more details on COCO, please visit [COCO](http://cocodataset.org)
 
+# Main components of this repository
+1. Create and upload tasks to MTurk
+2. Retrieve the results and view them with the Flask server
+3. Create the COCO dataset
+
 # Description of files in this repository
 
 Key files for creating new HITs:
@@ -33,16 +38,16 @@ Basic files:
 - `keys.json` - keep your AWS keys in this file and _make sure these are never publicly available!_
 
 Data folder in directory `data/`
-* `bad_workers.json`
-* `rejected_assignments.json`
-* `hits/<timestamp>_hits.json`
+NOTE: these files are created by you or by running the scripts!
+* `bad_workers.json` - dictionary of known bad workers and information about what to do with their tasks
+* `rejected_assignments.json` - list of assignment IDs that have been rejected
+* `hits/<timestamp>_hits.json` - list of the HITs created by running `create_hit_mturk.py`
 
-assignment_pickles:
-these are now just JSON lists... excuse the file format
+also in `data/` are the assignment pickles (these are now just JSON lists... excuse the file format):
 * `assignments_xxx.pickle`/`flagged_assignments_xxx.pickle` - retrieved assignments from MTurk
 
-Other pickle files in directory `pickles/`
-* mappings for image IDs to S3 URLs, food101 ID to image IDs, etc.
+Other pickle files in the directory `pickles/`
+* important mappings for image IDs to S3 URLs, food101 ID to image IDs, etc.
 
 ## OLD SCRATCH WORK/TEAM BRAINSTORMING BELOW THIS LINE
 
