@@ -1,7 +1,7 @@
 """
-Display the annotations on top of the images
+Overlay the segmentation annotations on top of the images.
 
-Usage: python visualize_annotations.py <glob_for_annotation_json_files>
+Usage: python visualize_annotations.py <glob_pattern_for_annotation_json_files>
 
 e.g. "../may18to22-first-iteration-annotations/*.json"
 """
@@ -13,16 +13,8 @@ import glob
 import sys
 
 import os.path
-import datetime
 
 from skimage import io
-
-
-import requests
-
-import pycocotools.mask
-import pycocotools.coco
-import pycocotools.cocoeval
 
 
 def jsonprint(obj):
@@ -30,31 +22,34 @@ def jsonprint(obj):
     print(json.dumps(obj, indent=4))
 
 
-
 def create_annotation(ans):
     """Load the given annotation dict, plot the segments on top of the retrieved image,
     save the annotated image as a file
 
-    Annotation dict format expected:
+    Annotation dict keys expected:
     'isObj': "1" or "0"
     'ans': dict containing the various COCO form fields "results" "action_log" etc.
+    'action_log': string containing the JSON of the actions recorded by COCO UI (including photo ID & URL)
 
-    Returns: filepath if successful, empty string otherwise
+    Returns:
+        filepath if successful, empty string otherwise
     """
     jsonprint(ann)
     if ann["isObj"] != "1":
-        print(b)
+        print("Skipping annotation with isObj=\'%s\'" % ann['isObj'])
         return ''
 
+    # Load the annotation JSON
     ans = json.loads(ans["ans"])
     results = json.loads(ans["results"])
     assert len(results) == 1  # should be 1 image per task
+    jsonprint(results)
+
     image_id, annotations = results.popitem()
     image_ids.append(image_id)
 
+    # Get the action log which contains the photo URL and other information
     action_log = json.loads(ans["action_log"])
-    jsonprint(results)
-    # TODO action log created for each image???
 
     assert action_log[0]["name"] == "init"
     assert action_log[0]["photo_id"] == image_id
@@ -65,10 +60,11 @@ def create_annotation(ans):
     print(photo_url)
 
     # Retrieve the image that was annotated
-    # TODO if on cluster, look directly to stored images rather than making requests
+    # TODO if on cluster, could load stored images rather than making requests to the remote URL
     image = io.imread(photo_url)
     fig = plt.figure()
     title = "%s @ %s" % (image_id, time_str)
+
     # title = "%s_%s" % (image_id, os.path.basename(filename))
     # TODO make option to only display JPG
     # plt.title(title)
