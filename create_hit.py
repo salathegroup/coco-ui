@@ -1,3 +1,8 @@
+"""
+TODO this file creates a Flask server to test the MTurk segmentation interface locally.
+
+It has not been updated since the MTurk interface was tested and should be reused with caution!
+"""
 import json
 import os
 import random
