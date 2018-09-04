@@ -1,6 +1,13 @@
+pycocotools
+Pillow
+matplotlib
+numpy
+pandas
+scikit-image
+seaborn
+tqdm
 boto3
 xmltodict
 jinja2
 flask
 bs4
-
