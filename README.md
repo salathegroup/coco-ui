@@ -1,11 +1,52 @@
 
-COCO Annotation UI
-==================
+COCO Annotation UI for MyFoodRepo Segmentation Dataset
+======================================================
 
-This project includes the front end user interfaces that are used to annotate COCO dataset.
-For more details, please visit [COCO](http://cocodataset.org)
+This project includes all the files needed to collect food image segmentations
+from MTurk and use these to create a COCO dataset. 
+For more details on COCO, please visit [COCO](http://cocodataset.org)
 
-# Adapting to myfoodrepo-segmentation-dataset
+# Description of files in this repository
+
+Key files for creating new HITs:
+* Static HTML/CSS/JS from COCO-UI: `/static`
+* Static content for qualification task (quiz files outside since we want them private, not in S3 folder) `static_qualification`
+* XML files for qualification task: Question Form and Answer key `Ques_Form.xml` and `Ans.xml`
+* `configs/config_instance_segmentation.json` contains all the MTurk settings (pay, task duration, etc.)
+* Segmentation HTML layout is in `tasks/coco_instance_segmentation.html` (interfaces for other image tasks come from the main coco-ui repo) 
+
+Python files
+* `create_hit_mturk.py` - key script to upload new segmentation tasks to MTurk. _Be careful with this one!_
+* `check_account_balance.py` - "Hello World" script to test the MTurk API.
+* `create_coco.py` - creates the COCO dataset from our segmentation annotations
+* `get_classnames.py` - helper file for food classes
+* `flask_hit_viewer.py` - basic server to view the annotations submitted by crowd workers so far
+* `visualize/visualize_annotations.py` - helper file
+* `get_results.py` - script to download annotations from MTurk 
+* `mturk_api_wrappers.py` - helper functions for interacting with MTurk
+* `create_hit.py` - probably broken now, was our Flask app for testing the interface
+  
+Basic files:
+- `.gitignore` - ignore some types of files
+- `Procfile` - left from flask app in testing
+- `requirements.txt` - Python packages needed for this repository 
+- `keys.json` - keep your AWS keys in this file and _make sure these are never publicly available!_
+
+Data folder in directory `data/`
+* `bad_workers.json`
+* `rejected_assignments.json`
+* `hits/<timestamp>_hits.json`
+
+assignment_pickles:
+these are now just JSON lists... excuse the file format
+* `assignments_xxx.pickle`/`flagged_assignments_xxx.pickle` - retrieved assignments from MTurk
+
+Other pickle files in directory `pickles/`
+* mappings for image IDs to S3 URLs, food101 ID to image IDs, etc.
+
+## OLD SCRATCH WORK/TEAM BRAINSTORMING BELOW THIS LINE
+
+### Adapting to myfoodrepo-segmentation-dataset
 
 COCO steps
 
@@ -27,19 +68,6 @@ stats we want:
 - difficulty/cost per task
 
 image ID is key in an S3 bucket that contains the image
-
-
-build-coffee-coco.js:1864 Uncaught TypeError: do_submit is not a function
-    at window.mt_submit (build-coffee-coco.js:1864)
-    at HTMLButtonElement.btn_submit (build-coffee-coco.js:1820)
-    at HTMLButtonElement.dispatch (build-js.js:2)
-    at HTMLButtonElement.h (build-js.js:2)
-
-
-
-# previous work
-
-## Feedback about "stock" coco-ui tasks
 
 ### General questions
 how will we evaluate quality of worker output (not supposed to "reject" bad work even if we could do it automatically)?
@@ -73,14 +101,9 @@ If > 10-15 instances marked:
 draw on all unlabeled instances of food X
 nice to have: clear/undo
 
-Else:
-
 ### 3b. Instance segmentation
 carefully trace around each region/instance/chunk/pile/?? that contains 100% (?) food X
 (problem say with rice if you have a piece of chicken on top in middle = a hole in the trace)
-
-
-
 
 ## Comments
 * [IMPORTANT] seems like we are mostly trying to learn recurring textures - shapes can be pretty useless for prepared food
@@ -110,12 +133,9 @@ carefully trace around each region/instance/chunk/pile/?? that contains 100% (?)
 * just the edible part?
 * consider - we already sort of know the categories from the way myfoodrepo-images is arranged
 
-
-
 ## Checklist before launching MTurk task
 * We need an instance
 * Clear explanation what is needed for task to be approved
 * Training tasks
 * Test with ourselves
 * Feedback testing: connect with Turkers/respond to questions
-* 
