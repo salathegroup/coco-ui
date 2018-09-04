@@ -1,3 +1,18 @@
+"""
+Create segmentation HITs on MTurk (or on sandbox)
+
+This script has a lot of moving parts, and should be used with extreme caution
+as it will upload HITs (i.e. workers will do them and you will have to pay them!)
+
+These parts include:
+- JSON file containing the settings for the MTurk task
+- JSON files containing the previous HITs that were created and any bad workers noted
+- Filepaths of the qualification and main task interfaces
+- Pickle files containing mappings from image IDs to URLs etc. (can be recreated in this script)
+
+Recommendation: read through very carefully or re-use certain elements in a
+new script if any of the requirements for HIT creation have changed!
+"""
 import json
 import os
 import urllib.parse
@@ -11,7 +26,6 @@ from jinja2 import FileSystemLoader, Environment
 import boto3
 
 from get_classnames import get_all_machine_learn_nodes
-from clear_hits_quals import clear_qualifications
 
 # Load config for this task
 config = json.load(open("configs/config_instance_segmentation.json"))
@@ -166,19 +180,18 @@ if existing_exclusion_qualification['NumResults'] == 0:
 else:
     MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID = existing_exclusion_qualification['QualificationTypes'][0]['QualificationTypeId']
 
-# Associate qualification with all known bad workers
+# Associate exclusion qualification with all known bad workers
 if not HIT["USE_SANDBOX"]:
-    bad_workers = json.load(open("bad_workers.json"))
+    bad_workers = json.load(open("data/bad_workers.json"))
     for worker_id in bad_workers:
         # Silently grant the bad workers our exclusion qualification
         mturk.associate_qualification_with_worker(QualificationTypeId=MTURK_WORKER_QUAL_FOR_EXCLUSION_TYPE_ID,
                                                   WorkerId=worker_id,
                                                   SendNotification=False)
 
-# TODO shouldn't really be here, clears/disables existing qualification tests!
-# if HIT["USE_SANDBOX"]:
-#     clear_qualifications(mturk)
-#
+
+# Create or update the qualification task
+
 existing_qualification_tests = mturk.list_qualification_types(Query=qual_HIT["Title"],
                                                               MustBeRequestable=True,
                                                               MustBeOwnedByCaller=True)
@@ -241,6 +254,7 @@ def get_image_ids_already_labeled():
     return image_ids_already_labeled
 
 
+# For now, skip all images that have already been labeled!
 image_ids_already_labeled = get_image_ids_already_labeled()
 seen = set()
 dups = []
@@ -251,7 +265,7 @@ for x in image_ids_already_labeled:
         seen.add(x)
 print(len(dups), 'duplicate image ids', dups)
 
-# Make it a set for speed
+# Make list into a set for speed
 image_ids_already_labeled = set(image_ids_already_labeled)
 print("HITs previously created for ", len(image_ids_already_labeled), "image IDs")
 
@@ -304,7 +318,6 @@ for class_id in class_ids_to_use:
             "SEARCH_QUERY": search_query,
             "TIME_CREATED_DEBUG": strftime("%Y_%m_%d_%H:%M:%S ", gmtime())
         }
-        # print(temp_dict)
 
         # Template stored in tasks/
         template_dir_loader = FileSystemLoader('tasks')
@@ -326,6 +339,7 @@ for class_id in class_ids_to_use:
             with open('debug/hit_%s.html' % image_id, 'w') as f:
                 f.write(html_text)
 
+        # Upload the HIT to MTurk!
         new_hit = mturk.create_hit(
             Title=HIT['Title'],
             Description=HIT["Description"],
@@ -351,7 +365,6 @@ for class_id in class_ids_to_use:
                                        ]
         )
 
-        # print(new_hit)
         num_hits_created += 1
         print("Num hits created so far:", num_hits_created)
         print("HITId: " + new_hit['HIT']['HITId'])
@@ -366,6 +379,7 @@ print("Created", len(hits), "hits")
 print(total_num_images, "total_num_images (will become hits)")
 print(len(image_ids_already_labeled), "image_ids_already_labeled (num unique image IDs from this and prev. scripts")
 
+# Save the HIT information for further use
 hits_filename = "hits/" + strftime("%Y_%m_%d_%H:%M:%S_", gmtime()) + "hits.json"
 if not os.path.exists("hits"):
     os.mkdir("hits")
