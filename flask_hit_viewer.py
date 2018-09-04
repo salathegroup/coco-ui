@@ -4,6 +4,8 @@ Flask webapp to view the MTurk submissions for a given set of segmentation tasks
 Uses a Pandas dataframe to hold the assignment information
 
 Make sure to set RESULT_IMAGE_DIR below to see the annotated images that have been saved previously
+and also check that the assignment and worker filepaths are set correctly (see any instance of
+the open() function).
 """
 import os
 import json
@@ -52,6 +54,11 @@ app = Flask("Flask segmentation HIT viewer")
 group_id = "3ZSDUF3VWNHXGCE1F6QPAPDO0HE23P"
 assignments_file = "data/assignment_pickles/assignments_2018_07_31_18:49:05.pickle"  # list of assignment Response dicts
 all_assignments = pickle.load(open(assignments_file, 'rb'))
+
+# Bad workers should be listed in this file
+flagged_workers_json = json.load(open('data/bad_workers.json'))
+flagged_workers = {wid: flagged_workers_json[wid]['status'] for wid in flagged_workers_json}
+
 
 # Create Pandas dataframe (one row for each assignment)
 data = []
@@ -262,21 +269,6 @@ def make_df_html(df, columns=None):
     return df.to_html(escape=False, max_cols=None, columns=columns)
 
 
-@app.route("/workers")
-def view_all_workers():
-    """Show all workers who particpated in this HIT"""
-    result = df.groupby("WorkerId").agg({'AssignmentId':'count', 'duration':'median', 'time_active_seconds':'median',
-                                         'flagged_isObj_as_0':'mean'}).sort_values(by='AssignmentId', ascending=False)
-    return make_df_html(result)
-
-
-@app.route("/workers/<worker_id>")
-def view_worker(worker_id):
-    """Show the work by this worker"""
-    result = df[df["WorkerId"] == worker_id]
-    return make_df_html(result)
-
-
 @app.route("/assignments/<assignment_id>")
 def view_assignment(assignment_id):
     """Get the assignment JSON for the given assignment
@@ -353,6 +345,51 @@ def view_hit(hit_id):
            str(["<img src=\"/result_images/worker%s_assignment%s.png\">" %
                 (x['Assignment']['WorkerId'], x['Assignment']['AssignmentId'])
                 for x in assignments])
+
+
+@app.route("/stats_new")
+def get_stats_df():
+    """Get mean/median stats from the Dataframe.
+
+    Returns a string with the mean/median for all workers and for the subset of "good" workers
+    """
+    result = df.mean()
+    bad_workers = set(flagged_workers)
+    print(~df['WorkerId'].isin(bad_workers))
+    return "MeanAll:"+str(result)+"MedianAll<br>"+str(df.median()) + "<br>MeanGoodWorkers" +str(df[~df['WorkerId'].isin(bad_workers)].mean()) + "<br>MedianGood" + str(df[~df['WorkerId'].isin(bad_workers)].median())
+
+
+@app.route("/workers")
+@app.route("/workers/sort/<sort_column>")
+def view_all_workers(sort_column=False):
+    """See all workers who particpated in this task.
+
+    Appending /sort/<sort_column> to the URL selects a field to sort by.
+    """
+    result = df.groupby("WorkerId").agg({'WorkerId':'first', 'AssignmentId':'count', 'duration':'median', 'time_active_seconds':'median',
+                                         'isObj=0':'mean'}).sort_values(by='AssignmentId', ascending=False)
+
+    def wrap_in_worker_link(wid):
+        """Create direct link to specific worker's page"""
+        return "<a href=\"/workers/%s\">%s</a>" % (wid, wid)
+
+    result['WorkerIdLink'] = [wrap_in_worker_link(index) for index,_ in result.iterrows()]
+
+    result['flagged'] = result['WorkerId'].apply(lambda wid: flagged_workers[wid] if wid in flagged_workers else "")
+
+    if sort_column:
+        result = result.sort_values(by=sort_column)
+
+    return make_df_html(result)
+
+
+@app.route("/workers/<worker_id>")
+def view_worker(worker_id):
+    """Show the last <= 10 submissions by this worker"""
+    result = df[df["WorkerId"] == worker_id]
+    result = result.sort_values(by='SubmitTime', ascending=False)
+    result = result.head(n=10)
+    return make_df_html(result)
 
 
 if __name__ == "__main__":
