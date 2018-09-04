@@ -22,7 +22,7 @@
   "IMAGES": {
     "URL_OF_S3_IMAGE_DIR": "https://s3.eu-central-1.amazonaws.com/myfoodrepo-bing-images/images/",
     "NUM_BING_IMAGES_PER_CLASS": 0,
-    "NUM_FOOD101_IMAGES_PER_CLASS": 200,
+    "NUM_FOOD101_IMAGES_PER_CLASS": 1,
     "FRAME_HEIGHT_PIXELS": 700,
     "CLASS_IDS_TO_USE": []
   }
